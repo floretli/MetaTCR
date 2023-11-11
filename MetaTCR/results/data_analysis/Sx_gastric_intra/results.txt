@@ -1,0 +1,8 @@
+Running with the following parameters:
+input_file: ./results_50/data_analysis/datasets_meta_mtx/Sx_gastric.pk
+out_dir: ./results_50/data_analysis/Sx_gastric_intra
+centroids: ./results_50/data_analysis/96_best_centers.pk
+meta_data: ./data/Sxlabels.csv
+#######################################
+Score:  2.308280503228824
+Significant difference batch effect detected!

@@ -1,0 +1,14 @@
+对meta vector拆分数据维度：
+
+UMAP_visualization_healthy control datasets_10cv.png 
+public_idx = [18,42,57,69]## public cv , 10% cv, 脚本 03viewxxx dim.py, 用public_cv(diversity_mtx)找的。 在04e脚本中用 75% mean, 10% cv提出来的公共cluster
+表示不太受batch effect影响，高表达，而且在人群中普遍存在的cluster【人身上有抵抗各种疾病的能力】
+代表一个人的本底水平，不管什么病或者健康人都有的，受疾病状态影响不大，受batch effect影响不大。umap实验发现只用这几个cluster很难区分出dataset。去掉这几个维度仍然能很好区分（说明这几个维度完全没有区分度）
+
+
+
+还有一些dataset相关的cluster. 
+dataset_cv(filelist)找每个batch自己的高频cluster.然后发现他们之间竟然有共性（Immune access之间相互重叠； BGI之间相互重叠）
+说明这些特别受平台影响，做差异分析的时候应该考虑这种影响
+
+找到几个cluster: 能区分immuneaccess和非immuneaccess的区别，说明特别受平台影响 不能跨平台执法
