@@ -1,8 +1,18 @@
 # temp scripts
 others*
+drop*
 
 ## models
 pretrained_models/*
+
+## old data
+results/data_analysis/datasets_meta_mtx*
+
+## figures and txt
+*.png
+*.svg
+*.txt
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -164,3 +174,6 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# old scripts
+/04b_clusters_variance_analysis_platform_diff.py
