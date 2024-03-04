@@ -1,0 +1,10 @@
+Running with the following parameters:
+input_file: ./results/data_analysis/datasets_mtx/Wang2022.pk
+out_dir: ./results/data_analysis/Wang2022_intra
+centroids: ./results/data_analysis/96_best_centers.pk
+meta_data: ./data/Wang2022.csv
+#######################################
+C:\Users\miaozhhuo2\PycharmProjects\pythonProject\MetaTCR\metatcr\visualization\dataset_vis.py:123: UserWarning: Ignoring `palette` because no `hue` variable has been assigned.
+  ax = sns.scatterplot(
+Score:  2.4715568522411004
+Significant difference batch effect detected!

@@ -1,8 +1,7 @@
 import torch
-from tape import TAPETokenizer
-from tcr2vec.model import TCR2vec
-from tcr2vec.dataset import TCRLabeledDset
-from tcr2vec.utils import get_emb
+from .tcr2vec.model import TCR2vec
+from .tcr2vec.dataset import TCRLabeledDset
+from .tcr2vec.utils import get_emb
 from torch.utils.data import DataLoader
 
 import numpy as np

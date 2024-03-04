@@ -9,7 +9,7 @@ random.seed(0)
 
 
 parser = configargparse.ArgumentParser()
-parser.add_argument('--out_dir', type=str, default='./results_50/data_analysis/clusters_identification', help='Output directory for processed data')
+parser.add_argument('--out_dir', type=str, default='./results/data_analysis/clusters_identification', help='Output directory for processed data')
 parser.add_argument('--centroids', type=str, default='./results/data_analysis/96_best_centers.pk', help='centroids file')
 parser.add_argument('--ept_file', type=str, default='./data/McPAS-TCR_filt_ept_full_deduplicated.tsv', help='input epitope file')
 parser.add_argument('--tcr_col', type=str, default='full_seq',

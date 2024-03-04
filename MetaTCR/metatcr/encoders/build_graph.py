@@ -8,7 +8,7 @@ import pickle
 import tqdm
 # import mkl
 # mkl.get_max_threads()
-import faiss
+# import faiss
 from .tcr2vec_tcr_encoder import seqlist2ebd, load_tcr2vec
 
 
@@ -424,30 +424,40 @@ def files2clstfreq(filelist, centroids, cutoff = None):
     return count_to_frequency(freq_features), count_to_frequency(freqsum_features)
 
 
-def db2count_graph(diversity_mtx, keep_edge_rate=0.4):  ##count mtx is a 2-dim numpy array, contains co exp count number
+def db2count_graph(diversity_mtx, keep_edge_rate=0.4, get_topk = False):  ##count mtx is a 2-dim numpy array, contains co exp count number
+    from sklearn.metrics import pairwise_distances
+    distances = pairwise_distances(diversity_mtx)
+    # weights = 1 / (distances.sum(axis=1) + 1e-10)
+    weights = distances.sum(axis=1)
+    weights = weights / np.sum(weights)
 
     (sample_num, clst_num) = diversity_mtx.shape
     occur_thres = (1 / clst_num) * 0.5 ## 50% mean clst size
-    weights = np.arange(1, sample_num + 1) / sample_num
 
     global_graph = count_graph(clst_num)
     for sample_id in range(sample_num):
         meta_vec = diversity_mtx[sample_id, :]
         weight = weights[sample_id]
-        valid_ids = np.where(meta_vec > occur_thres)[1]
+        valid_ids = np.where(meta_vec > occur_thres)[0]
         global_graph.add_unequal_weight(valid_ids, weight)
     count_mtx = global_graph.get_count_mtx()
 
     positive_edge_count = np.sum(count_mtx > 0)
-    topk = min(int(keep_edge_rate * clst_num * clst_num), positive_edge_count)
+
 
     adj_mtx = count_mtx.copy()
-    ## get top k value in adj_mtx
-    topk_value = np.sort(adj_mtx, axis=None)[-topk]
-    adj_mtx[adj_mtx < topk_value] = 0
-    adj_mtx[adj_mtx > 0] = 1
+
+    if get_topk == True:
+        ## get top k value in adj_mtx
+        topk = min(int(keep_edge_rate * clst_num * clst_num), positive_edge_count)
+        topk_value = np.sort(adj_mtx, axis=None)[-topk]
+        adj_mtx[adj_mtx < topk_value] = 0
+        adj_mtx[adj_mtx > 0] = 1
+
     edge_tensor = adj2edge_index(adj_mtx)
-    return edge_tensor
+    # print(adj_mtx)
+
+    return edge_tensor, adj_mtx
 
 def build_co_occurr_graph(diversity_mtx, centroids, save_dir, keep_edge_rate=0.4):
 

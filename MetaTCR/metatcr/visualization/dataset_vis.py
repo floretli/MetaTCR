@@ -11,7 +11,8 @@ def jensen_shannon_divergence(p, q):  ## smaller JSD means more similar
     jsd = 0.5 * (entropy(p, m) + entropy(q, m))
     return jsd
 
-def visualize_all_datasets(mtx, setnames, min_dist=0.1, n_neighbors=50, dim=2, type = "cluster TCR diversity", out_dir = "./results/data_analysis"):
+
+def visualize_metavec(mtx, setnames, min_dist=0.1, n_neighbors=50, dim=2, type = "cluster TCR diversity", out_dir = "./results/data_analysis"):
 
     """
     Use UMAP to visualize all datasets in mtxs. Color each dataset differently.
@@ -32,8 +33,9 @@ def visualize_all_datasets(mtx, setnames, min_dist=0.1, n_neighbors=50, dim=2, t
     else:
         palette = sns.color_palette("hls", num_label)
 
+
     # Create a dataframe with the embedding and dataset labels
-    df = pd.DataFrame(embedding, columns=['umap1', 'umap2'])
+    df = pd.DataFrame(embedding, columns=['Umap1', 'Umap2'])
 
     df['dataset'] = setnames
     if mtx.shape[0] > 1000:
@@ -44,14 +46,17 @@ def visualize_all_datasets(mtx, setnames, min_dist=0.1, n_neighbors=50, dim=2, t
     # Plot the UMAP embedding colored by dataset
 
     fig, ax = plt.subplots(figsize=(8, 6))
-    ax = sns.scatterplot(x='umap1', y='umap2', hue='dataset', palette=palette, data=df, legend='full', alpha=0.7, s=s_size)
+    ax = sns.scatterplot(x='Umap1', y='Umap2', hue='dataset', palette=palette,
+                         data=df, legend='full', alpha=0.5, s=s_size, edgecolor='none')
+
 
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.title('UMAP visualization: ' + type)
-    file_path = os.path.join(out_dir, 'UMAP_visualization_{}.png'.format(type))
+    # plt.title('UMAP visualization: ' + type)
+    plt.title(type)
+    file_path = os.path.join(out_dir, 'UMAP_visualization_{}.svg'.format(type))
     plt.savefig(file_path, dpi = 900, bbox_inches='tight')
 
-def visualize_one_dataset_valid(mtx, smplist, df_metadata, refdata, id_col, label_col, min_dist=0.2, n_neighbors=20, dim=2, type="TCR diversity", out_dir = "./results/data_analysis"):
+def visualize_metavec_inset(mtx, smplist, df_metadata, refdata, id_col, label_col, min_dist=0.2, n_neighbors=20, dim=2, type="TCR diversity", out_dir = "./results/data_analysis"):
     """
     Use UMAP to visualize all datasets in mtxs. Color each dataset differently.
     dim: dimension of UMAP embedding
@@ -89,7 +94,7 @@ def visualize_one_dataset_valid(mtx, smplist, df_metadata, refdata, id_col, labe
     embedding = umap.UMAP(min_dist=min_dist,n_neighbors=n_neighbors, n_components=dim, random_state=1).fit_transform(data)
 
     # Create a dataframe with the embedding and dataset labels
-    df = pd.DataFrame(embedding, columns=["umap1", "umap2"])
+    df = pd.DataFrame(embedding, columns=["Umap1", "Umap2"])
     df['sample'] = smplist
 
     if len(label_col) > 1:
@@ -105,8 +110,8 @@ def visualize_one_dataset_valid(mtx, smplist, df_metadata, refdata, id_col, labe
         df["label"] = label
         if refdata is not None:
             ax = sns.scatterplot(
-                x="umap1",
-                y="umap2",
+                x="Umap1",
+                y="Umap2",
                 hue="label",
                 data=df[df["label"] == "Reference"],
                 palette=["gray"],
@@ -116,7 +121,7 @@ def visualize_one_dataset_valid(mtx, smplist, df_metadata, refdata, id_col, labe
             )
         # Plot control data
         ax = sns.scatterplot(
-            x="umap1", y="umap2",
+            x="Umap1", y="Umap2",
             hue="label",
             data=df[df["label"] == "Control"],
             legend="full",
@@ -126,8 +131,8 @@ def visualize_one_dataset_valid(mtx, smplist, df_metadata, refdata, id_col, labe
         )
         # Plot mtx data colored by label
         ax = sns.scatterplot(
-            x="umap1",
-            y="umap2",
+            x="Umap1",
+            y="Umap2",
             hue="label",
             data=df[np.logical_and(df["label"] != "Reference", df["label"] != "Control")],
             legend="full",
@@ -139,7 +144,8 @@ def visualize_one_dataset_valid(mtx, smplist, df_metadata, refdata, id_col, labe
         ax.set_title(str(label_col[i]))
     plt.suptitle("UMAP - datasets: " + type)
     plt.subplots_adjust(top=0.8, bottom=0.1)
-    plt.savefig(os.path.join(out_dir, "UMAP_visualization_of_datasets_{}.png".format(type)))
+    plt.savefig(os.path.join(out_dir, "UMAP_visualization_of_datasets_{}.svg".format(type)), dpi=600,
+                bbox_inches='tight')
 
 
 

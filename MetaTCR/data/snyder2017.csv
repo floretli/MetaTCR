@@ -1,4 +1,4 @@
-patient_id,Sample ID,Product,Sample Type,Time Point,Clinical Response,Clinical Response2,Productive TCR Templates(cnt),T-cell fraction,Clonality,Diversity,Productive Unique TCRs (cnt),TCR Templates,Top Clone Freq(%),Unique TCRs(cnt),inputDNA(ng),Productive Uniques Ratio
+Patient id,Sample ID,Product,Sample Type,Time Point,Clinical response,Clinical Response2,Productive TCR Templates(cnt),T-cell fraction,Clonality,Diversity,Productive Unique TCRs (cnt),TCR Templates,Top Clone Freq(%),Unique TCRs(cnt),inputDNA(ng),Productive Uniques Ratio
 471,0471-14-090-6A,Deep,PBMC,A,PD,PD,230181,41.10786079,0.34895718,10.497178,71400,261867,15.2669103,87364,3636,0.310190676
 471,0471-14-090-6B,Deep,PBMC,B,PD,PD,186412,33.29118626,0.34053135,10.519147,63345,212956,14.86410338,77627,3636,0.339811815
 471,0471-14-090-6C,Deep,PBMC,C,PD,PD,190204,33.96839684,0.2817875,11.614524,73805,218981,12.4764249,90210,3636,0.388030746

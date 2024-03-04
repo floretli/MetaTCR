@@ -9,9 +9,9 @@ import random
 random.seed(0)
 
 parser = configargparse.ArgumentParser()
-parser.add_argument('--mtx_dir', type=str, default='./results_50/data_analysis/datasets_meta_mtx', help='')
-parser.add_argument('--add_dir', type=str, default='./results_50/data_analysis/datasets_meta_mtx_add', help='')
-parser.add_argument('--out_dir', type=str, default='./results_50/data_analysis/time_series', help='Output directory for processed data')
+parser.add_argument('--mtx_dir', type=str, default='./results/data_analysis/datasets_meta_mtx', help='')
+parser.add_argument('--add_dir', type=str, default='./results/data_analysis/datasets_meta_mtx_add', help='')
+parser.add_argument('--out_dir', type=str, default='./results/data_analysis/time_series', help='Output directory for processed data')
 
 args = parser.parse_args()
 if not os.path.exists(args.out_dir):
@@ -22,6 +22,7 @@ for key, value in vars(args).items():
     print(f"{key}: {value}")
 print("#######################################")
 
+cluster_num = 96
 
 def get_dataset_mtx(filename, key):
     # Initialize an empty list to store the numpy arrays
@@ -40,7 +41,7 @@ def shannon_index(arr):
     return shannon_index
 
 def plot_mem_naive(df_merged):
-    cols = list(range(96))
+    cols = list(range(cluster_num))
     groups = df_merged.groupby('patient_id')
     # Create a figure for each group
     for name, group in groups:
@@ -57,17 +58,22 @@ def plot_mem_naive(df_merged):
 
             axs[i].set_title(f'Time point: {time_point}')
             axs[i].set_yticklabels(y_labels, rotation=0)
+            axs[i].set_xticks(np.arange(0, cluster_num, 3), np.arange(1, cluster_num + 1, 3))
 
         # Set the figure title
-        fig.suptitle(f'MetaTCR diversity for {name}')
+        # fig.suptitle(f'MetaTCR TCR diversity for {name}')
+        fig.suptitle(f'Sample: {name}', fontsize=14)
 
         # Adjust layout
         plt.subplots_adjust(hspace=0.5, top=0.8, bottom=0.1)
-        plt.savefig(os.path.join(args.out_dir, f"memory-vs-naive_{name}.png"), dpi=600)
+
+        plt.tight_layout()
+
+        plt.savefig(os.path.join(args.out_dir, f"memory-vs-naive_{name}.svg"), dpi=600)
         # plt.show()
 
 def plot_time_series(df):
-    cols = list(range(96))
+    cols = list(range(cluster_num))
     subjects = df['patient_id'].unique()
 
     # Create a figure for each subject
@@ -78,7 +84,6 @@ def plot_time_series(df):
         y_labels = df_subject['time_point'].tolist()
         df_subject = df_subject[cols]
 
-
         # Create a new figure
         plt.figure(figsize=(10, 4))
 
@@ -87,19 +92,18 @@ def plot_time_series(df):
 
         # Rotate the y-axis labels
         plt.yticks(rotation=0)
-        #
+        plt.xticks(np.arange(0, cluster_num, 3), np.arange(1, cluster_num + 1, 3))
         # plt.ylabel(y_labels, rotation=0)
         plt.title(f"Heatmap for {subject}")
-        plt.savefig(os.path.join(args.out_dir, f"heatmap_{subject}.png"), dpi=600)
+        plt.savefig(os.path.join(args.out_dir, f"heatmap_{subject}.svg"), dpi=600)
 
         # Show the plot
         # plt.show()
         # exit()
 
 ## Plot time series samples from healthy-time-course dataset
-# tc_mtx = get_dataset_mtx("healthy-time-course.pk", "abundance_mtx")
-tc_mtx = get_dataset_mtx("healthy-time-course.pk", "diversity_mtx")
-tc_smp = get_dataset_mtx("healthy-time-course.pk", "sample_list")
+tc_mtx = get_dataset_mtx("Healthy-time-course.pk", "diversity_mtx")
+tc_smp = get_dataset_mtx("Healthy-time-course.pk", "sample_list")
 tc_meta = "./data/healthy-time-course.csv"
 
 # Compute the Shannon index for each row in tc_mtx
@@ -127,13 +131,6 @@ df_merged = df_merged.groupby('sample_name').filter(lambda x: len(x) >= 2)
 df_merged.to_csv(os.path.join(args.out_dir, "healthy-time-course-dataset_Memory-vs-Naive.csv"), index=False)
 
 
-# Select columns '0' to '95'
-# cols = list(range(96))
-# df_subset = df_merged[cols]
-
 # Group by 'patient_id'
-
-
 plot_mem_naive(df_merged)
 plot_time_series(df_pbmc)
-# print(df_pbmc)

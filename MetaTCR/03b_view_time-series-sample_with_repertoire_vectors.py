@@ -10,9 +10,8 @@ import random
 random.seed(0)
 
 parser = configargparse.ArgumentParser()
-parser.add_argument('--mtx_dir', type=str, default='./results_50/data_analysis/datasets_meta_mtx', help='')
-parser.add_argument('--add_dir', type=str, default='./results_50/data_analysis/datasets_meta_mtx_add', help='')
-parser.add_argument('--out_dir', type=str, default='./results_50/data_analysis/time_series', help='Output directory for processed data')
+parser.add_argument('--mtx_dir', type=str, default='./results/data_analysis/datasets_mtx', help='')
+parser.add_argument('--out_dir', type=str, default='./results/data_analysis/time_series', help='Output directory for processed data')
 
 args = parser.parse_args()
 if not os.path.exists(args.out_dir):
@@ -23,15 +22,9 @@ for key, value in vars(args).items():
     print(f"{key}: {value}")
 print("#######################################")
 
-
 def get_dataset_mtx(filename, key):
     # Initialize an empty list to store the numpy arrays
-
-    try:
-        dataset_dict = load_pkfile(os.path.join(args.mtx_dir, filename))
-    except FileNotFoundError:
-        # If the file is not found in the first directory, try the second directory
-        dataset_dict = load_pkfile(os.path.join(args.add_dir, filename))
+    dataset_dict = load_pkfile(os.path.join(args.mtx_dir, filename))
     return dataset_dict[key]
 
 def visualize_one_dataset_time(mtx, smplist, metadata, refdata, id_col, label_col, min_dist=0.2, n_neighbors=20, dim=2, type="TCR diversity", out_dir = "./results/data_analysis"):
@@ -75,7 +68,7 @@ def visualize_one_dataset_time(mtx, smplist, metadata, refdata, id_col, label_co
     embedding = umap.UMAP(min_dist=min_dist,n_neighbors=n_neighbors, n_components=dim, random_state=1).fit_transform(data)
 
     # Create a dataframe with the embedding and dataset labels
-    df = pd.DataFrame(embedding, columns=["umap1", "umap2"])
+    df = pd.DataFrame(embedding, columns=["Umap1", "Umap2"])
     df['sample'] = smplist
 
     if len(label_col) > 1:
@@ -91,14 +84,15 @@ def visualize_one_dataset_time(mtx, smplist, metadata, refdata, id_col, label_co
         df["label"] = label
         if refdata is not None:
             ax = sns.scatterplot(
-                x="umap1",
-                y="umap2",
+                x="Umap1",
+                y="Umap2",
                 hue="label",
                 data=df[df["label"] == "Reference"],
                 palette=["lightgray"],
                 legend="full",
                 alpha=0.5,
                 s=s_size,
+                edgecolor='none'
             )
         # Plot mtx data colored by label
         ax = sns.scatterplot(
@@ -109,34 +103,35 @@ def visualize_one_dataset_time(mtx, smplist, metadata, refdata, id_col, label_co
             legend="full",
             alpha=1,
             s=s_size,
-            palette="rainbow"
+            palette="rainbow",
+            edgecolor='none'
         )
         handles, labels = ax.get_legend_handles_labels()
         plt.legend(handles=handles, labels=labels, bbox_to_anchor=(1.00, 1), fontsize=8)
 
         ax.set_title(str(label_col[i]))
 
-    plt.suptitle("UMAP - datasets: " + type)
+    # plt.suptitle("UMAP - datasets: " + type)
     plt.subplots_adjust(wspace=0.4)
-    plt.savefig(os.path.join(out_dir, "UMAP_visualization_of_datasets_{}.png".format(type)), dpi=600)
+    plt.savefig(os.path.join(out_dir, "UMAP_visualization_of_datasets_{}.svg".format(type)), dpi=600, bbox_inches='tight')
     # plt.show()
 
 
 ## Plot time series samples from Snyder2017 dataset
-snyder2017_mtx = get_dataset_mtx("snyder2017_plos.pk", "diversity_mtx")
-snyder2017_smp = get_dataset_mtx("snyder2017_plos.pk", "sample_list")
+snyder2017_mtx = get_dataset_mtx("Snyder2017.pk", "diversity_mtx")
+snyder2017_smp = get_dataset_mtx("Snyder2017.pk", "sample_list")
 snyder2017_meta = "./data/snyder2017.csv"
 
 visualize_one_dataset_time(snyder2017_mtx, snyder2017_smp, metadata=snyder2017_meta, refdata=None,
-                      id_col="Sample ID", label_col=["patient_id", "Clinical Response"],
+                      id_col="Sample ID", label_col=["Patient id", "Clinical response"],
                       min_dist=0.05, n_neighbors=10, dim=2, type="snyder2017", out_dir=args.out_dir)
 
 
 ## Plot time series samples from healthy-time-course dataset
-tc_mtx = get_dataset_mtx("healthy-time-course.pk", "diversity_mtx")
-tc_smp = get_dataset_mtx("healthy-time-course.pk", "sample_list")
-tc_meta = "./data/healthy-time-course.csv"
+tc_mtx = get_dataset_mtx("Emerson-time-course.pk", "diversity_mtx")
+tc_smp = get_dataset_mtx("Emerson-time-course.pk", "sample_list")
+tc_meta = "./data/emerson-time-course.csv"
 
 visualize_one_dataset_time(tc_mtx, tc_smp, metadata=tc_meta, refdata=None,
-                      id_col="sample_id", label_col=["patient_id", "data_source"],
-                      min_dist=0.05, n_neighbors=10, dim=2, type="healthy-time-course", out_dir=args.out_dir)
+                      id_col="sample_id", label_col=["Patient id", "Data source"],
+                      min_dist=0.05, n_neighbors=10, dim=2, type="Emerson-time-course", out_dir=args.out_dir)
