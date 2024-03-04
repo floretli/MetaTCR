@@ -3,7 +3,7 @@
 /drop*
 
 ## models
-pretrained_models/*
+#pretrained_models/*
 
 ## old data
 results/data_analysis/datasets_meta_mtx*
