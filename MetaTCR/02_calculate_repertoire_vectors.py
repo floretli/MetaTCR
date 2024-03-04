@@ -1,4 +1,3 @@
-
 from metatcr.utils.utils import save_pk, load_pkfile
 from metatcr.encoders.build_graph import update_graph_config, files2clstfreq, read_filelist_from_dir
 import configargparse
@@ -8,9 +7,9 @@ import numpy as np
 from collections import defaultdict
 
 parser = configargparse.ArgumentParser()
-parser.add_argument('--dataset_dirs', type=str, default='./data/dataset_dir.list.part1', help='dataset directories for processing. Each line stores a directory path')
+parser.add_argument('--dataset_dirs', type=str, default='./data/example_repertoire.datalist', help='dataset directories for processing. Each line stores a directory path')
 parser.add_argument('--centroids_file', type=str, default='./results/data_analysis/96_best_centers.pk', help='Centroids file from clustering')
-parser.add_argument('--out_dir', type=str, default='./results/data_analysis/datasets_meta_mtx', help='Output directory for processed data')
+parser.add_argument('--out_dir', type=str, default='./results/data_analysis/datasets_mtx', help='Output directory for processed data')
 parser.add_argument('--file_cut_size', type=int, default=None, help='How many files should be selected from the filelist')
 parser.add_argument('--freq_col', type=str, default='frequencyCount (%)', help='Column name for frequency count')
 parser.add_argument('--tcr_col', type=str, default='full_seq',

@@ -1,6 +1,6 @@
 # temp scripts
-others*
-drop*
+/others*
+/drop*
 
 ## models
 pretrained_models/*
